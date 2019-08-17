@@ -29,7 +29,13 @@ object Solver {
   /**
    * Determines if constraint expressed by type A is satisfied by a particular choice of values
    */
-  def testConstraintSatisfaction[A, B]( inequality : Vector[A], values : Vector[B]) : Boolean = ???
+  def testConstraintSatisfaction[A:Numeric]( inequality : Vector[A], values : Vector[A]) : Boolean = {
+    val left = (inequality zip values).map({
+      case (coeff, value) => implicitly[Numeric[A]].times(coeff, value)
+    }).sum
+    val right = inequality.last
+    implicitly[Numeric[A]].lt(left, right)
+  }
 
   /**
    * Brute Forces all solutions which solve a set of integer linear inequalities for variables that are specified as ranges

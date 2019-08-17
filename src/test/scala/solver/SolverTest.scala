@@ -61,7 +61,7 @@ class ConstraintSatisfactionTest extends FunSuite with Matchers {
     Solver.testConstraintSatisfaction(inequality, values) should be(true)
   }
 
-  test("two variables, satisfied") {
+  test("two variables, not satisfied") {
     val inequality = Vector(1, 1, 2) // x + y < 2
     val values = Vector(1, 3) // x == 1, y == 3
     Solver.testConstraintSatisfaction(inequality, values) should be(false)
