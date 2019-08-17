@@ -1,2 +1,7 @@
 *.class
 *.log
+metals.*.db
+.bloop/*
+project/.bloop/*
+target/*
+project/target/*
