@@ -42,8 +42,35 @@ class SimplifyInequalitiesTest extends FunSuite with Matchers {
   }
 }
 
+class ConstraintSatisfactionTest extends FunSuite with Matchers {
+  test("one variable, satisfied") {
+    val inequality = Vector(1, 2) // 1 * x < 2
+    val values = Vector(1) // x == 1
+    Solver.testConstraintSatisfaction(inequality, values) should be(true)
+  }
+
+  test("one variable, not satisfied") {
+    val inequality = Vector(1, 2) // 1 * x < 2
+    val values = Vector(3) // x == 3
+    Solver.testConstraintSatisfaction(inequality, values) should be(false)
+  }
+
+  test("two variables, satisfied") {
+    val inequality = Vector(1, 1, 3) // x + y < 2
+    val values = Vector(1, 1) // x == 1, y == 1
+    Solver.testConstraintSatisfaction(inequality, values) should be(true)
+  }
+
+  test("two variables, satisfied") {
+    val inequality = Vector(1, 1, 2) // x + y < 2
+    val values = Vector(1, 3) // x == 1, y == 3
+    Solver.testConstraintSatisfaction(inequality, values) should be(false)
+  }
+}
+
 class BruteForceInequalitiesTest extends FunSuite with Matchers {
   test("one variable, one solution") {
+    pending
     val matrix = Vector(
       Vector(-1, -1), // x > 1 => -x < -1
       Vector(1, 3) // x < 3
@@ -57,6 +84,7 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
   }
 
   test("one variable, two solution") {
+    pending
     val matrix = Vector(
       Vector(-1, -1), // x > 1 => -x < -1
       Vector(1, 4) // x < 3

@@ -27,6 +27,11 @@ object Solver {
     //
 
   /**
+   * Determines if constraint expressed by type A is satisfied by a particular choice of values
+   */
+  def testConstraintSatisfaction[A, B]( inequality : Vector[A], values : Vector[B]) : Boolean = ???
+
+  /**
    * Brute Forces all solutions which solve a set of integer linear inequalities for variables that are specified as ranges
    */
   def bruteForceInequalities( inequalities : Vector[Vector[Int]], variables : Vector[Range] ) : Vector[Vector[Int]] = ???
