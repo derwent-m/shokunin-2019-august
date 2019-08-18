@@ -87,7 +87,6 @@ class PartiallySolveInequalityTest extends FunSuite with Matchers {
 
 class BruteForceInequalitiesTest extends FunSuite with Matchers {
   test("one variable, one solution") {
-    pending
     val matrix = Vector(
       Vector(-1, -1), // x > 1 => -x < -1
       Vector(1, 3) // x < 3
@@ -101,7 +100,6 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
   }
 
   test("one variable, two solutions") {
-    pending
     val matrix = Vector(
       Vector(-1, -1), // x > 1 => -x < -1
       Vector(1, 4) // x < 3
@@ -115,7 +113,6 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
   }
 
   test("one variable, no solution") {
-    pending
     val matrix = Vector(
       Vector(1, 1), // x < 1
       Vector(-1, -3) // x > 3 => -x < -3
