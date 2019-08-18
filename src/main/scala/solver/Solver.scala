@@ -135,12 +135,25 @@ object Solver {
         val variableIndex = 0
         val remainingVariables = variables.patch(variableIndex, Vector(), 1)
         // - For every possible value of that variable:
-        // for (variableValue <- variables(variableIndex)) {
-        //   //   - partially solve the remaining inequalities
-        //   val partialSolution =
-        //   //   - recurse
-        // }
-        Vector.empty[Vector[Int]]
+        variables(variableIndex)
+          .flatMap((variableValue) => {
+            //   - partially solve the remaining inequalities
+            val partialSolution = partiallySolveInequalities(
+              inequalitiesSimplified,
+              variableIndex,
+              variableValue
+            )
+
+            //   - TODO: check for any all zero constraints or impossible constraints quickly
+
+            //   - recurse
+            val solutions =
+              bruteForceInequalities(partialSolution, remainingVariables)
+
+            //    - append variable value to solutions
+            solutions.map((solution) => variableValue +: solution)
+          })
+          .toVector
       }
     }
   }
