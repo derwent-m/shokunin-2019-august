@@ -124,4 +124,20 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
       Vector.empty[Vector[Int]] // i.e. []
     )
   }
+
+  test("two variable, one solution") {
+    // x == 1, y == 2
+    val matrix = Vector(
+      Vector(1, 1, 4), // x + y < 4
+      Vector(-1, -1, -3), // x + y > 3 => -x -y < -3
+      Vector(-1, 0, -1), // x > 0 => -x < 0
+      Vector(1, 0, 2) // x < 2
+    )
+    val variables = Vector(
+      0 to 10 // x can be anywhere from 0 to 10
+    )
+    Solver.bruteForceInequalities(matrix, variables) should be(
+      Vector( Vector(1, 2) )
+    )
+  }
 }
