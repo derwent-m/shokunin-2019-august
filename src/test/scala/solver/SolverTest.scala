@@ -200,4 +200,23 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
       Vector( Vector(1, 2) )
     )
   }
+
+  test("values are unique") {
+    // x == 1, y == 2
+    val matrix = Vector(
+      Vector(1, 1, 3), // x + y < 3
+      Vector(-1, -1, -1), // x + y > 1 => -x -y < -1
+    )
+    val variables = Vector(
+      0 to 10, // x can be anywhere from 0 to 10
+      0 to 10, // y can be anywhere from 0 to 10
+    )
+    Solver.bruteForceInequalities(matrix, variables) should be(
+      Vector(
+        Vector(0, 2),
+        // Vector(1, 1) <- This solution shouldn't appear
+        Vector(2, 0)
+      )
+    )
+  }
 }
