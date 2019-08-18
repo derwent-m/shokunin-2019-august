@@ -113,8 +113,8 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
     val variables = Vector(
       0 to 10 // x can be anywhere from 0 to 10
     )
-    Solver.bruteForceInequalities(matrix, variables) should be(
-      Vector( Vector(2), Vector(3) ) // i.e. [x == 2, x == 3]
+    Solver.bruteForceInequalities(matrix, variables).toSet should be(
+    Vector( Vector(2), Vector(3) ).toSet // i.e. [x == 2, x == 3]
     )
   }
 
@@ -215,6 +215,50 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
       Vector(
         Vector(0, 2),
         Vector(2, 0)
+      ).toSet
+    )
+  }
+
+  test("the whole gang") {
+    val n = 5 // number of people
+    val matrix = Vector(
+      Vector(-1,  0,  0,  0,  0, -1), // Je > 1 => -Je < -1
+      Vector( 0,  1,  0,  0,  0,  n), // Ev < n
+      Vector( 0,  0, -1,  0,  0, -1), // Jo > 1 => -Jo < -1
+      Vector( 0,  0,  1,  0,  0,  n), // Jo < n
+      Vector( 0,  1,  0, -1,  0,  0)  // Sa > Ev => Ev - Sa < 0
+    )
+    // Ranks can be anywhere from 1 to n
+    val variables = (1 to n).map(_ => 1 to n).toVector
+    Solver.bruteForceInequalities(matrix, variables).toSet should be(
+      Vector(
+        Vector(3, 2, 4, 5, 1),
+        Vector(5, 1, 3, 2, 4),
+        Vector(5, 2, 4, 3, 1),
+        Vector(2, 3, 4, 5, 1),
+        Vector(2, 4, 3, 5, 1),
+        Vector(5, 1, 3, 4, 2),
+        Vector(4, 1, 3, 5, 2),
+        Vector(3, 1, 2, 5, 4),
+        Vector(4, 2, 3, 5, 1),
+        Vector(3, 1, 2, 4, 5),
+        Vector(4, 3, 2, 5, 1),
+        Vector(5, 3, 2, 4, 1),
+        Vector(5, 1, 4, 3, 2),
+        Vector(2, 1, 4, 3, 5),
+        Vector(5, 2, 3, 4, 1),
+        Vector(3, 4, 2, 5, 1),
+        Vector(4, 1, 2, 3, 5),
+        Vector(5, 1, 4, 2, 3),
+        Vector(2, 1, 3, 5, 4),
+        Vector(5, 1, 2, 4, 3),
+        Vector(4, 1, 3, 2, 5),
+        Vector(5, 1, 2, 3, 4),
+        Vector(2, 1, 3, 4, 5),
+        Vector(2, 1, 4, 5, 3),
+        Vector(3, 1, 4, 2, 5),
+        Vector(3, 1, 4, 5, 2),
+        Vector(4, 1, 2, 5, 3)
       ).toSet
     )
   }
