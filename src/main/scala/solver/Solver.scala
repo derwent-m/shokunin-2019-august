@@ -159,8 +159,8 @@ object Solver {
               usedValues + variableValue
             )
 
-            //    - append variable value to solutions
-            solutions.map((solution) => variableValue +: solution)
+            //    - insert variable value into solutions
+            solutions.map((solution) => solution.patch(variableIndex, Vector(variableValue), 0))
           })
           .toVector
       }
