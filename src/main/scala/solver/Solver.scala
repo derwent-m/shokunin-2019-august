@@ -113,8 +113,6 @@ object Solver {
       )
     }
 
-    println(s"bruteForceInequalities called with $inequalities , $variables, $usedValues")
-
     variables.length match {
       case 0 =>
         throw new IllegalArgumentException("some variables must be provided")
@@ -128,7 +126,6 @@ object Solver {
         (variables(0).toSet -- usedValues)
           .filter(
             (variableValue) => {
-              // println(s"simple: $variableValue")
               testConstraintsSatisfaction(
                 inequalitiesSimplified,
                 Vector(variableValue)
@@ -146,7 +143,6 @@ object Solver {
         // - For every possible value of that variable:
         (variables(variableIndex).toSet -- usedValues)
           .flatMap((variableValue) => {
-            // println(s"recursive: $variableValue")
             //   - partially solve the remaining inequalities
             val partialSolution = partiallySolveInequalities(
               inequalitiesSimplified,
