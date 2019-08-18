@@ -40,13 +40,17 @@ object Solver {
   /**
    * Partially solves an inequality, rewrites the inequality in terms of this new information
    */
-  def partiallySolveInequality[A:Numeric]( inequality : Vector[A], index: Int, value : A ) : Vector[A] = ???
+  def partiallySolveInequality[A:Numeric]( inequality : Vector[A], index: Int, value : A ) : Vector[A] = {
+    val result = inequality.patch(index, Vector(), 1)
+    result.updated(
+      result.length - 1,
+      implicitly[Numeric[A]].minus( result.last, implicitly[Numeric[A]].times(inequality(index), value) )
+    )
+  }
 
   /**
    * Recursively Brute Forces all solutions which solve a set of integer linear inequalities
    * for variables that are specified as ranges
    */
-  def bruteForceInequalities( inequalities : Vector[Vector[Int]], variables : Vector[Range] ) : Vector[Vector[Int]] = {
-
-  }
+  def bruteForceInequalities( inequalities : Vector[Vector[Int]], variables : Vector[Range] ) : Vector[Vector[Int]] = ???
 }
