@@ -66,6 +66,12 @@ class ConstraintSatisfactionTest extends FunSuite with Matchers {
     val values = Vector(1, 3) // x == 1, y == 3
     Solver.testConstraintSatisfaction(inequality, values) should be(false)
   }
+
+  test("all zeros") {
+    val inequality = Vector(0, 0, 0) // 0 < 0
+    val values = Vector(1, 2) // x == 1, y == 2
+    Solver.testConstraintSatisfaction(inequality, values) should be(false)
+  }
 }
 
 class PartiallySolveInequalityTest extends FunSuite with Matchers {
@@ -125,16 +131,50 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
     )
   }
 
-  test("two variable, one solution") {
+  test("less variables than constraints") {
     // x == 1, y == 2
     val matrix = Vector(
       Vector(1, 1, 4), // x + y < 4
-      Vector(-1, -1, -3), // x + y > 3 => -x -y < -3
-      Vector(-1, 0, -1), // x > 0 => -x < 0
+      Vector(-1, -1, -2), // x + y > 2 => -x -y < -2
+      Vector(-1, 0, 0), // x > 0 => -x < 0
       Vector(1, 0, 2) // x < 2
     )
     val variables = Vector(
       0 to 10 // x can be anywhere from 0 to 10
+    )
+    assertThrows[IllegalArgumentException] {
+      Solver.bruteForceInequalities(matrix, variables)
+    }
+  }
+
+  test("uneven constraints") {
+    // x == 1, y == 2
+    val matrix = Vector(
+      Vector(1, 1, 4), // x + y < 4
+      Vector(-1, -1, -2), // x + y > 2 => -x -y < -2
+      Vector(-1, 0, 0), // x > 0 => -x < 0
+      Vector(1, 2) // x < 2
+    )
+    val variables = Vector(
+      0 to 10, // x can be anywhere from 0 to 10
+      1 to 5
+    )
+    assertThrows[IllegalArgumentException] {
+      Solver.bruteForceInequalities(matrix, variables)
+    }
+  }
+
+  test("two variable, one solution") {
+    // x == 1, y == 2
+    val matrix = Vector(
+      Vector(1, 1, 4), // x + y < 4
+      Vector(-1, -1, -2), // x + y > 2 => -x -y < -2
+      Vector(-1, 0, 0), // x > 0 => -x < 0
+      Vector(1, 0, 2) // x < 2
+    )
+    val variables = Vector(
+      0 to 10, // x can be anywhere from 0 to 10
+      0 to 10, // y can be anywhere from 0 to 10
     )
     Solver.bruteForceInequalities(matrix, variables) should be(
       Vector( Vector(1, 2) )

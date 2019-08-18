@@ -56,7 +56,9 @@ object Solver {
       inequalities: Vector[Vector[A]],
       values: Vector[A]
   ): Boolean = {
-    inequalities forall { testConstraintSatisfaction(_, values) }
+    inequalities forall { (inequality) =>
+      testConstraintSatisfaction(inequality, values)
+    }
   }
 
   /**
@@ -77,6 +79,16 @@ object Solver {
     )
   }
 
+  def partiallySolveInequalities[A: Numeric](
+      inequalities: Vector[Vector[A]],
+      index: Int,
+      value: A
+  ): Vector[Vector[A]] = {
+    inequalities.map(
+      (inequality) => partiallySolveInequality(inequality, index, value)
+    )
+  }
+
   /**
     * Recursively Brute Forces all solutions which solve a set of integer linear inequalities
     * for variables that are specified as ranges
@@ -85,17 +97,34 @@ object Solver {
       inequalities: Vector[Vector[Int]],
       variables: Vector[Range]
   ): Vector[Vector[Int]] = {
+    val inequalitiesSimplified = simplifyInequalities(inequalities)
+
+    val inequalityDimensions = inequalities.map(_.length - 1)
+    if (!inequalityDimensions.forall(_ == inequalityDimensions.head)) {
+      throw new IllegalArgumentException(
+        "All inequality constraints should be the same length"
+      )
+    }
+
+    println(s"bruteForceInequalities called with $inequalities , $variables")
+
     variables.length match {
       case 0 =>
         throw new IllegalArgumentException("some variables must be provided")
+      case x if x != inequalityDimensions.head =>
+        throw new IllegalArgumentException(
+          s"length of variables ($x) should be equal to inequality dimensions ($inequalityDimensions.head)"
+        )
       case 1 => {
         // Trivial case
-        val inequalitiesSimplified = simplifyInequalities(inequalities)
         // TODO: this could probably be solved more trivially using `solutionBounds`
         variables(0)
           .filter(
-            (value) =>
-              testConstraintsSatisfaction(inequalitiesSimplified, Vector(value))
+            (variableValue) =>
+              testConstraintsSatisfaction(
+                inequalitiesSimplified,
+                Vector(variableValue)
+              )
           )
           .map(Vector(_))
           .toVector
