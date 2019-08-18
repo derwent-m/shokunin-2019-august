@@ -27,7 +27,7 @@ object Solver {
     //
 
   /**
-   * Determines if constraint expressed by type A is satisfied by a particular choice of values
+   * Determines if constraint expressed as a vector over type A is satisfied by a particular choice of values
    */
   def testConstraintSatisfaction[A:Numeric]( inequality : Vector[A], values : Vector[A]) : Boolean = {
     val left = (inequality zip values).map({
@@ -38,7 +38,15 @@ object Solver {
   }
 
   /**
-   * Brute Forces all solutions which solve a set of integer linear inequalities for variables that are specified as ranges
+   * Partially solves an inequality, rewrites the inequality in terms of this new information
    */
-  def bruteForceInequalities( inequalities : Vector[Vector[Int]], variables : Vector[Range] ) : Vector[Vector[Int]] = ???
+  def partiallySolveInequality[A:Numeric]( inequality : Vector[A], index: Int, value : A ) : Vector[A] = ???
+
+  /**
+   * Recursively Brute Forces all solutions which solve a set of integer linear inequalities
+   * for variables that are specified as ranges
+   */
+  def bruteForceInequalities( inequalities : Vector[Vector[Int]], variables : Vector[Range] ) : Vector[Vector[Int]] = {
+
+  }
 }

@@ -68,6 +68,23 @@ class ConstraintSatisfactionTest extends FunSuite with Matchers {
   }
 }
 
+class PartiallySolveInequalityTest extends FunSuite with Matchers {
+  test("two variables, solve first") {
+    val inequality = Vector( 1, 1, 2 ) // x + y < 2
+    // solve for x == 1
+    Solver.partiallySolveInequality(inequality, 0, 1) should be (
+      Vector(1, 1) // y < 1
+    )
+  }
+  test("two variables, solve second") {
+    val inequality = Vector( 2, -3, 5 ) // 2x - 3y < 5
+    // solve for y == 3
+    Solver.partiallySolveInequality(inequality, 1, 3) should be (
+      Vector(2, 14) // 2x < 14
+    )
+  }
+}
+
 class BruteForceInequalitiesTest extends FunSuite with Matchers {
   test("one variable, one solution") {
     pending
@@ -83,7 +100,7 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
     )
   }
 
-  test("one variable, two solution") {
+  test("one variable, two solutions") {
     pending
     val matrix = Vector(
       Vector(-1, -1), // x > 1 => -x < -1
@@ -94,6 +111,20 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
     )
     Solver.bruteForceInequalities(matrix, variables) should be(
       Vector( Vector(2), Vector(3) ) // i.e. [x == 2, x == 3]
+    )
+  }
+
+  test("one variable, no solution") {
+    pending
+    val matrix = Vector(
+      Vector(1, 1), // x < 1
+      Vector(-1, -3) // x > 3 => -x < -3
+    )
+    val variables = Vector(
+      0 to 10 // x can be anywhere from 0 to 10
+    )
+    Solver.bruteForceInequalities(matrix, variables) should be(
+      Vector.empty[Vector[Int]] // i.e. []
     )
   }
 }
