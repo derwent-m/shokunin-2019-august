@@ -10,9 +10,11 @@ class SimplifyInequalitiesTest extends FunSuite with Matchers {
       Vector(1, 2), // 1 * x < 0
       Vector(1, 1) // 1 * x < 1
     )
-    Solver.simplifyInequalities[Int](matrix) should be( Vector(
-      Vector( 1, 1 ) // 1 * x < 1
-    ))
+    Solver.simplifyInequalities[Int](matrix) should be(
+      Vector(
+        Vector(1, 1) // 1 * x < 1
+      )
+    )
   }
 
   test("one variable, redundant rules, non-normalised") {
@@ -21,24 +23,28 @@ class SimplifyInequalitiesTest extends FunSuite with Matchers {
       Vector(1, 2), // 1 * x < 2
       Vector(2, 2) // 2 * x < 2 => 1 * x < 1
     )
-    Solver.simplifyInequalities[Int](matrix) should be( Vector(
-      Vector( 1, 1 ) // 1 * x < 1
-    ))
+    Solver.simplifyInequalities[Int](matrix) should be(
+      Vector(
+        Vector(1, 1) // 1 * x < 1
+      )
+    )
   }
 
   /**
-   * These normals are in opposite directions, so shouldn't cancel out
-   */
+    * These normals are in opposite directions, so shouldn't cancel out
+    */
   test("one variable, redundant rules, planes in opposite directions, convex") {
     pending
     val matrix = Vector(
       Vector(-1, -1), // x > 1 => -x < -1
       Vector(1, 3) // x < 3
     )
-    Solver.simplifyInequalities[Int](matrix) should be( Vector(
-      Vector(-1, -1), // x > 1 => -x < -1
-      Vector(1, 3) // x < 3
-    ))
+    Solver.simplifyInequalities[Int](matrix) should be(
+      Vector(
+        Vector(-1, -1), // x > 1 => -x < -1
+        Vector(1, 3) // x < 3
+      )
+    )
   }
 }
 
@@ -76,16 +82,16 @@ class ConstraintSatisfactionTest extends FunSuite with Matchers {
 
 class PartiallySolveInequalityTest extends FunSuite with Matchers {
   test("two variables, solve first") {
-    val inequality = Vector( 1, 1, 2 ) // x + y < 2
+    val inequality = Vector(1, 1, 2) // x + y < 2
     // solve for x == 1
-    Solver.partiallySolveInequality(inequality, 0, 1) should be (
+    Solver.partiallySolveInequality(inequality, 0, 1) should be(
       Vector(1, 1) // y < 1
     )
   }
   test("two variables, solve second") {
-    val inequality = Vector( 2, -3, 5 ) // 2x - 3y < 5
+    val inequality = Vector(2, -3, 5) // 2x - 3y < 5
     // solve for y == 3
-    Solver.partiallySolveInequality(inequality, 1, 3) should be (
+    Solver.partiallySolveInequality(inequality, 1, 3) should be(
       Vector(2, 14) // 2x < 14
     )
   }
@@ -114,7 +120,7 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
       0 to 10 // x can be anywhere from 0 to 10
     )
     Solver.bruteForceInequalities(matrix, variables).toSet should be(
-    Vector( Vector(2), Vector(3) ).toSet // i.e. [x == 2, x == 3]
+      Vector(Vector(2), Vector(3)).toSet // i.e. [x == 2, x == 3]
     )
   }
 
@@ -168,18 +174,18 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
     // x == 1, y == 2
     val matrix = Vector(
       Vector(1, 1, 4), // x + y < 4
-      Vector(-1, -1, -2), // x + y > 2 => -x -y < -2
+      Vector(-1, -1, -2) // x + y > 2 => -x -y < -2
     )
     val variables = Vector(
       0 to 10, // x can be anywhere from 0 to 10
-      0 to 10, // y can be anywhere from 0 to 10
+      0 to 10 // y can be anywhere from 0 to 10
     )
     Solver.bruteForceInequalities(matrix, variables).toSet should be(
       Vector(
         Vector(0, 3),
         Vector(1, 2),
         Vector(2, 1),
-        Vector(3, 0),
+        Vector(3, 0)
       ).toSet
     )
   }
@@ -194,10 +200,10 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
     )
     val variables = Vector(
       0 to 10, // x can be anywhere from 0 to 10
-      0 to 10, // y can be anywhere from 0 to 10
+      0 to 10 // y can be anywhere from 0 to 10
     )
     Solver.bruteForceInequalities(matrix, variables) should be(
-      Vector( Vector(1, 2) )
+      Vector(Vector(1, 2))
     )
   }
 
@@ -205,11 +211,11 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
     // x == 1, y == 2
     val matrix = Vector(
       Vector(1, 1, 3), // x + y < 3
-      Vector(-1, -1, -1), // x + y > 1 => -x -y < -1
+      Vector(-1, -1, -1) // x + y > 1 => -x -y < -1
     )
     val variables = Vector(
       0 to 10, // x can be anywhere from 0 to 10
-      0 to 10, // y can be anywhere from 0 to 10
+      0 to 10 // y can be anywhere from 0 to 10
     )
     Solver.bruteForceInequalities(matrix, variables).toSet should be(
       Vector(
@@ -222,11 +228,11 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
   test("the whole gang") {
     val n = 5 // number of people
     val matrix = Vector(
-      Vector(-1,  0,  0,  0,  0, -1), // Je > 1 => -Je < -1
-      Vector( 0,  1,  0,  0,  0,  n), // Ev < n
-      Vector( 0,  0, -1,  0,  0, -1), // Jo > 1 => -Jo < -1
-      Vector( 0,  0,  1,  0,  0,  n), // Jo < n
-      Vector( 0,  1,  0, -1,  0,  0)  // Sa > Ev => Ev - Sa < 0
+      Vector(-1, 0, 0, 0, 0, -1), // Je > 1 => -Je < -1
+      Vector(0, 1, 0, 0, 0, n), // Ev < n
+      Vector(0, 0, -1, 0, 0, -1), // Jo > 1 => -Jo < -1
+      Vector(0, 0, 1, 0, 0, n), // Jo < n
+      Vector(0, 1, 0, -1, 0, 0) // Sa > Ev => Ev - Sa < 0
     )
     // Ranks can be anywhere from 1 to n
     val variables = (1 to n).map(_ => 1 to n).toVector

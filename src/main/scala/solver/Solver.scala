@@ -118,7 +118,7 @@ object Solver {
         throw new IllegalArgumentException("some variables must be provided")
       case x if x != inequalityDimensions.head =>
         throw new IllegalArgumentException(
-          s"length of variables ($x) should be equal to inequality dimensions ($inequalityDimensions.head)"
+          s"length of variables ($x) should equal width of inequalities"
         )
       case 1 => {
         // Trivial case
@@ -160,7 +160,10 @@ object Solver {
             )
 
             //    - insert variable value into solutions
-            solutions.map((solution) => solution.patch(variableIndex, Vector(variableValue), 0))
+            solutions.map(
+              (solution) =>
+                solution.patch(variableIndex, Vector(variableValue), 0)
+            )
           })
           .toVector
       }
