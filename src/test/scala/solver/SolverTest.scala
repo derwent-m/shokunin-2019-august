@@ -174,13 +174,13 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
       0 to 10, // x can be anywhere from 0 to 10
       0 to 10, // y can be anywhere from 0 to 10
     )
-    Solver.bruteForceInequalities(matrix, variables) should be(
+    Solver.bruteForceInequalities(matrix, variables).toSet should be(
       Vector(
         Vector(0, 3),
         Vector(1, 2),
         Vector(2, 1),
         Vector(3, 0),
-      )
+      ).toSet
     )
   }
 
@@ -211,12 +211,11 @@ class BruteForceInequalitiesTest extends FunSuite with Matchers {
       0 to 10, // x can be anywhere from 0 to 10
       0 to 10, // y can be anywhere from 0 to 10
     )
-    Solver.bruteForceInequalities(matrix, variables) should be(
+    Solver.bruteForceInequalities(matrix, variables).toSet should be(
       Vector(
         Vector(0, 2),
-        // Vector(1, 1) <- This solution shouldn't appear
         Vector(2, 0)
-      )
+      ).toSet
     )
   }
 }

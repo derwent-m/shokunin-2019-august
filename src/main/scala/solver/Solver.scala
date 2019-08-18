@@ -90,12 +90,19 @@ object Solver {
   }
 
   /**
-    * Recursively Brute Forces all solutions which solve a set of integer linear inequalities
-    * for variables that are specified as ranges
+    * Recursively brute forces all solutions which solve a set of integer linear inequalities
+    * for variables that can have any value specified by a range
+    * where all values are different.
+    *
+    * @param inequalities a system of inequalities expressed as a matrix over type A.
+    * @param variables a range of values each variable can be for each variable
+    * @param usedValues the values which have already been used in the solution
+    * @return All possible solutions to these inequalities
     */
   def bruteForceInequalities(
       inequalities: Vector[Vector[Int]],
-      variables: Vector[Range]
+      variables: Vector[Range],
+      usedValues: Set[Int] = Set()
   ): Vector[Vector[Int]] = {
     val inequalitiesSimplified = simplifyInequalities(inequalities)
 
@@ -106,7 +113,7 @@ object Solver {
       )
     }
 
-    println(s"bruteForceInequalities called with $inequalities , $variables")
+    // println(s"bruteForceInequalities called with $inequalities , $variables, $usedValues")
 
     variables.length match {
       case 0 =>
@@ -118,13 +125,14 @@ object Solver {
       case 1 => {
         // Trivial case
         // TODO: this could probably be solved more trivially using `solutionBounds`
-        variables(0)
+        (variables(0).toSet -- usedValues)
           .filter(
-            (variableValue) =>
+            (variableValue) => {
               testConstraintsSatisfaction(
                 inequalitiesSimplified,
                 Vector(variableValue)
               )
+            }
           )
           .map(Vector(_))
           .toVector
@@ -135,7 +143,7 @@ object Solver {
         val variableIndex = 0
         val remainingVariables = variables.patch(variableIndex, Vector(), 1)
         // - For every possible value of that variable:
-        variables(variableIndex)
+        (variables(variableIndex).toSet -- usedValues)
           .flatMap((variableValue) => {
             //   - partially solve the remaining inequalities
             val partialSolution = partiallySolveInequalities(
@@ -147,8 +155,11 @@ object Solver {
             //   - TODO: check for any all zero constraints or impossible constraints quickly
 
             //   - recurse
-            val solutions =
-              bruteForceInequalities(partialSolution, remainingVariables)
+            val solutions = bruteForceInequalities(
+              partialSolution,
+              remainingVariables,
+              usedValues + variableValue
+            )
 
             //    - append variable value to solutions
             solutions.map((solution) => variableValue +: solution)
