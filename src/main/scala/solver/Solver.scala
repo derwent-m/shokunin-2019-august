@@ -10,8 +10,8 @@ object Solver {
     *  @return the simplified matrix
     */
   def simplifyInequalities[A](
-      inequalities: Vector[Vector[A]]
-  ): Vector[Vector[A]] = {
+      inequalities: Vector[Constraint[A]]
+  ): Vector[Constraint[A]] = {
     // TODO: implement this
     inequalities
   }
@@ -29,63 +29,29 @@ object Solver {
     * @return the solution widths
     */
   def solutionBounds[A](
-      inequalities: Vector[Vector[A]]
+      inequalities: Vector[Constraint[A]]
   ): Vector[Tuple2[Option[A], Option[A]]] = ???
   //
-
-  /**
-    * Determines if constraint expressed as a vector over type A is satisfied by a particular choice of values
-    */
-  def testConstraintSatisfaction[A: Numeric](
-      inequality: Vector[A],
-      values: Vector[A]
-  ): Boolean = {
-    val left = (inequality zip values)
-      .map({
-        case (coeff, value) => implicitly[Numeric[A]].times(coeff, value)
-      })
-      .sum
-    val right = inequality.last
-    implicitly[Numeric[A]].lt(left, right)
-  }
 
   /**
     * Determines if a system of constraints expressed as a vector over type A is satisfied by a particular choice of values
     */
   def testConstraintsSatisfaction[A: Numeric](
-      inequalities: Vector[Vector[A]],
-      values: Vector[A]
+      inequalities: Vector[Constraint[A]],
+      assignment: Vector[A]
   ): Boolean = {
     inequalities forall { (inequality) =>
-      testConstraintSatisfaction(inequality, values)
+      inequality.isSatisfiedBy(assignment)
     }
   }
 
-  /**
-    * Partially solves an inequality, rewrites the inequality in terms of this new information
-    */
-  def partiallySolveInequality[A: Numeric](
-      inequality: Vector[A],
-      index: Int,
-      value: A
-  ): Vector[A] = {
-    val result = inequality.patch(index, Vector(), 1)
-    result.updated(
-      result.length - 1,
-      implicitly[Numeric[A]].minus(
-        result.last,
-        implicitly[Numeric[A]].times(inequality(index), value)
-      )
-    )
-  }
-
   def partiallySolveInequalities[A: Numeric](
-      inequalities: Vector[Vector[A]],
+      inequalities: Vector[Constraint[A]],
       index: Int,
       value: A
-  ): Vector[Vector[A]] = {
+  ): Vector[Constraint[A]] = {
     inequalities.map(
-      (inequality) => partiallySolveInequality(inequality, index, value)
+      (inequality) => inequality.partiallySolve(index, value)
     )
   }
 
@@ -100,7 +66,7 @@ object Solver {
     * @return All possible solutions to these inequalities
     */
   def bruteForceInequalities(
-      inequalities: Vector[Vector[Int]],
+      inequalities: Vector[Constraint[Int]],
       variables: Vector[Range],
       usedValues: Set[Int] = Set()
   ): Vector[Vector[Int]] = {
