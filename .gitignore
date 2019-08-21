@@ -5,3 +5,4 @@ metals.*.db
 project/.bloop/*
 target/*
 project/target/*
+.metals/*
