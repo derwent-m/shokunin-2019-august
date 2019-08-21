@@ -90,14 +90,12 @@ object Solver {
         // Trivial case
         // TODO: this could probably be solved more trivially using `solutionBounds`
         (variables(0).toSet -- usedValues)
-          .filter(
-            (variableValue) => {
-              testConstraintsSatisfaction(
-                inequalitiesSimplified,
-                Vector(variableValue)
-              )
-            }
-          )
+          .filter((variableValue) => {
+            testConstraintsSatisfaction(
+              inequalitiesSimplified,
+              Vector(variableValue)
+            )
+          })
           .map(Vector(_))
           .toVector
       }

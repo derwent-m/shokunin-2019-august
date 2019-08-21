@@ -5,7 +5,7 @@ package solver
   * variables can have
   */
 case class Constraint[A](vector: Vector[A])(implicit num: Numeric[A]) {
-  def length : Int = vector.length
+  def length: Int = vector.length
 
   /**
     * Determines if this constraint is satisfied by a particular
@@ -26,15 +26,13 @@ case class Constraint[A](vector: Vector[A])(implicit num: Numeric[A]) {
     * and re-state the constraint without this variable
     */
   def partiallySolve(index: Int, value: A): this.type = {
-    copy(vector
-      .patch(index, Vector(), 1)
-      .updated(
-        length - 2,
-        num.minus(
-          vector.last,
-          num.times(vector(index), value)
+    copy(
+      vector
+        .patch(index, Vector(), 1)
+        .updated(
+          length - 2,
+          num.minus(vector.last, num.times(vector(index), value))
         )
-      )
     ).asInstanceOf[this.type]
   }
 }
