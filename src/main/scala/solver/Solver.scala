@@ -10,8 +10,8 @@ object Solver {
     *  @return the simplified matrix
     */
   def simplifyInequalities[A](
-      inequalities: Vector[Constraint[A]]
-  ): Vector[Constraint[A]] = {
+      inequalities: Vector[SingleConstraint[A]]
+  ): Vector[SingleConstraint[A]] = {
     // TODO: implement this
     inequalities
   }
@@ -29,15 +29,15 @@ object Solver {
     * @return the solution widths
     */
   def solutionBounds[A](
-      inequalities: Vector[Constraint[A]]
+      inequalities: Vector[SingleConstraint[A]]
   ): Vector[Tuple2[Option[A], Option[A]]] = ???
   //
 
   /**
     * Determines if a system of constraints expressed as a vector over type A is satisfied by a particular choice of values
     */
-  def testConstraintsSatisfaction[A: Numeric](
-      inequalities: Vector[Constraint[A]],
+  def testSingleConstraintsSatisfaction[A: Numeric](
+      inequalities: Vector[SingleConstraint[A]],
       assignment: Vector[A]
   ): Boolean = {
     inequalities forall { (inequality) =>
@@ -46,10 +46,10 @@ object Solver {
   }
 
   def partiallySolveInequalities[A: Numeric](
-      inequalities: Vector[Constraint[A]],
+      inequalities: Vector[SingleConstraint[A]],
       index: Int,
       value: A
-  ): Vector[Constraint[A]] = {
+  ): Vector[SingleConstraint[A]] = {
     inequalities.map(
       (inequality) => inequality.partiallySolve(index, value)
     )
@@ -66,7 +66,7 @@ object Solver {
     * @return All possible solutions to these inequalities
     */
   def bruteForceInequalities(
-      inequalities: Vector[Constraint[Int]],
+      inequalities: Vector[SingleConstraint[Int]],
       variables: Vector[Range],
       usedValues: Set[Int] = Set()
   ): Vector[Vector[Int]] = {
@@ -91,7 +91,7 @@ object Solver {
         // TODO: this could probably be solved more trivially using `solutionBounds`
         (variables(0).toSet -- usedValues)
           .filter((variableValue) => {
-            testConstraintsSatisfaction(
+            testSingleConstraintsSatisfaction(
               inequalitiesSimplified,
               Vector(variableValue)
             )

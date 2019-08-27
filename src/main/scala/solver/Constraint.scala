@@ -1,10 +1,16 @@
 package solver
 
+trait Constraint[A, T <: Constraint[A, T]] {
+  def isSatisfiedBy(assignment: Vector[A]): Boolean
+  def partiallySolve(index: Int, value: A): T
+}
+
 /**
-  * A single constraint which determins the values that a set of
-  * variables can have
+  * A single constraint which determines the values that a set of
+  * variables can have. Constraints are strict integer linear inequalities
   */
-case class Constraint[A](vector: Vector[A])(implicit num: Numeric[A]) {
+case class SingleConstraint[A](vector: Vector[A])(implicit num: Numeric[A])
+    extends Constraint[A, SingleConstraint[A]] {
   def length: Int = vector.length
 
   /**
