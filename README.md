@@ -52,8 +52,10 @@ Can encode inequalities as a matrix, E.G.
 Can be written as
 
 ```md
-  -2 -3 -1  // -2x -3y < -1
-   3 -1  2  // 3x - y < 2
+   x  y
+  -- --
+  -2 -3 | -1  // -2x -3y < -1
+   3 -1 |  2  // 3x - y < 2
 ```
 
 If there are 5 people, then they can be ranked 1 to 5 where 1 is the best, and 5 is the worst.
