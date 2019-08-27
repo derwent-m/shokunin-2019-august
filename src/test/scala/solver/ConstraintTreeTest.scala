@@ -4,7 +4,15 @@ import org.scalatest.{Matchers, FunSuite}
 
 /** @version 1.0.0 */
 class ConstraintTreeTest extends FunSuite with Matchers {
-  test("one variable, isSatisfiedBy, and") {
+  test("one variable, isSatisfiedBy, leaf") {
+    val tree = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(-1, 0)))
+    )
+
+    tree.isSatisfiedBy(Vector(1)) should be(true)
+  }
+
+  test("one variable, isSatisfiedBy, node, and") {
     pending
     val tree = ConstraintTree[Int](Node(
       Logic.and,
@@ -15,7 +23,7 @@ class ConstraintTreeTest extends FunSuite with Matchers {
     tree.isSatisfiedBy(Vector(1)) should be(true)
   }
 
-  test("one variable, isSatisfiedBy, or") {
+  test("one variable, isSatisfiedBy, node, or") {
     pending
     val tree = ConstraintTree[Int](Node(
       Logic.or,
