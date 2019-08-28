@@ -61,7 +61,6 @@ class ConstraintTreeSatisfiedTest extends FunSuite with Matchers {
 
 class ConstraintTreePartiallySolveTest extends FunSuite with Matchers {
   test("two variables, partiallySolve, leaf") {
-    pending
     val tree = ConstraintTree[Int](
       Leaf(SingleConstraint(Vector(1, 1, 2))) // x + y < 2
     )
@@ -74,7 +73,6 @@ class ConstraintTreePartiallySolveTest extends FunSuite with Matchers {
   }
 
   test("two variables, partiallySolve, node") {
-    pending
     val tree = ConstraintTree[Int](
       Node(
         Logic.and,
@@ -84,12 +82,11 @@ class ConstraintTreePartiallySolveTest extends FunSuite with Matchers {
     )
 
     // solve for x == 1
-    val solutionLeft = tree.partiallySolve(0, 1).t.left.get.leafValue.get
-    val solutionRight = tree.partiallySolve(0, 1).t.right.get.leafValue.get
-    solutionLeft.vector should be(
-      Vector(1, 1) // y < 1
+    val solution = tree.partiallySolve(1, 3).t
+    solution.left.get.leafValue.get.vector should be(
+      Vector(1, -1) // y < 1
     )
-    solutionRight.vector should be (
+    solution.right.get.leafValue.get.vector should be (
       Vector(2, 14)
     )
   }

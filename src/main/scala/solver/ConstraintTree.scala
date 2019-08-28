@@ -57,5 +57,21 @@ case class ConstraintTree[A](
       case Empty => true
     }
   }
-  def partiallySolve(index: Int, value: A): this.type = ???
+  def partiallySolve(index: Int, value: A): this.type = {
+    copy(
+      t match {
+        case n: Node[V, N] => {
+          Node(
+            n.nodeValue.get,
+            ConstraintTree[A](n.left.get).partiallySolve(index, value).t,
+            ConstraintTree[A](n.right.get).partiallySolve(index, value).t
+          )
+        }
+        case l: Leaf[V, N] => {
+          Leaf(l.leafValue.get.partiallySolve(index, value))
+        }
+        case Empty => Empty
+      }
+    ).asInstanceOf[this.type]
+  }
 }
