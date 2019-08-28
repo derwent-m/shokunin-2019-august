@@ -13,7 +13,6 @@ class ConstraintTreeTest extends FunSuite with Matchers {
   }
 
   test("one variable, isSatisfiedBy, node, and") {
-    pending
     val tree = ConstraintTree[Int](Node(
       Logic.and,
       Leaf(SingleConstraint(Vector(1, 2))),
@@ -24,7 +23,6 @@ class ConstraintTreeTest extends FunSuite with Matchers {
   }
 
   test("one variable, isSatisfiedBy, node, or") {
-    pending
     val tree = ConstraintTree[Int](Node(
       Logic.or,
       Leaf(SingleConstraint(Vector(1, 2))),
@@ -37,7 +35,6 @@ class ConstraintTreeTest extends FunSuite with Matchers {
   }
 
   test("multiple variable, isSatisfiedBy, and") {
-    pending
     val n = 5 // number of people
     val tree = ConstraintTree[Int](Node(
       Logic.and,

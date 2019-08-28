@@ -26,23 +26,35 @@ trait Tree[+V, +N] {
   }
 }
 
-case class Node[V, N]( v: N, l: Tree[V, N], r: Tree[V, N] ) extends Tree[V, N]
+case class Node[V, N](v: N, l: Tree[V, N], r: Tree[V, N]) extends Tree[V, N]
 case class Leaf[V, N](v: V) extends Tree[V, N]
 case object Empty extends Tree[Nothing, Nothing]
 
-case class ConstraintTree[A](t:Tree[SingleConstraint[A], Function2[Boolean, Boolean, Boolean]])
-    extends Constraint[A, ConstraintTree[A]]
-{
+case class ConstraintTree[A](
+    t: Tree[SingleConstraint[A], Function2[Boolean, Boolean, Boolean]]
+) extends Constraint[A, ConstraintTree[A]] {
   type V = SingleConstraint[A]
   type N = Function2[Boolean, Boolean, Boolean]
   def isSatisfiedBy(assignment: Vector[A]): Boolean = {
     t match {
-      case n: Node[V, N] => true
-      case l: Leaf[V, N] => l.leafValue match {
-        case Some(constraint) => constraint.isSatisfiedBy(assignment)
-        case None => true
-      }
-      case Empty         => true
+      case n: Node[V, N] =>
+        (
+          for {
+            o <- n.nodeValue;
+            l = ConstraintTree[A](n.left getOrElse (Empty))
+            r = ConstraintTree[A](n.right getOrElse (Empty))
+          } yield o(
+            l.isSatisfiedBy(assignment),
+            r.isSatisfiedBy(assignment)
+          )
+        ) getOrElse true
+      case l: Leaf[V, N] =>
+        (
+          for {
+            c <- l.leafValue
+          } yield c.isSatisfiedBy(assignment)
+        ) getOrElse true
+      case Empty => true
     }
   }
   def partiallySolve(index: Int, value: A): this.type = ???
