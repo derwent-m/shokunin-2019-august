@@ -37,23 +37,13 @@ case class ConstraintTree[A](
   type N = Function2[Boolean, Boolean, Boolean]
   def isSatisfiedBy(assignment: Vector[A]): Boolean = {
     t match {
-      case n: Node[V, N] =>
-        (
-          for {
-            o <- n.nodeValue;
-            l = ConstraintTree[A](n.left getOrElse (Empty))
-            r = ConstraintTree[A](n.right getOrElse (Empty))
-          } yield o(
-            l.isSatisfiedBy(assignment),
-            r.isSatisfiedBy(assignment)
-          )
-        ) getOrElse true
-      case l: Leaf[V, N] =>
-        (
-          for {
-            c <- l.leafValue
-          } yield c.isSatisfiedBy(assignment)
-        ) getOrElse true
+      case n: Node[V, N] => {
+        n.nodeValue.get(
+          ConstraintTree[A](n.left.get).isSatisfiedBy(assignment),
+          ConstraintTree[A](n.right.get).isSatisfiedBy(assignment)
+        )
+      }
+      case l: Leaf[V, N] => l.leafValue.get.isSatisfiedBy(assignment)
       case Empty => true
     }
   }
