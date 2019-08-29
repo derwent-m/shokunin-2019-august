@@ -72,4 +72,7 @@ case class ConstraintTree[A](
   def or(other: ConstraintTree[A]): this.type = {
     copy(Node(Logic.or, t, other.t)).asInstanceOf[this.type]
   }
+
+  // inequalities.map(_.length - 1)
+  def dimensions(): Vector[Int] = ???
 }

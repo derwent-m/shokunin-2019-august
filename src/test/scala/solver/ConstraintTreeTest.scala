@@ -93,7 +93,7 @@ class ConstraintTreePartiallySolveTest extends FunSuite with Matchers {
 }
 
 
-class ConstraintTreeAndOr extends FunSuite with Matchers {
+class ConstraintTreeAndOrTest extends FunSuite with Matchers {
   val leafLeft = ConstraintTree[Int](
     Leaf(SingleConstraint(Vector(-1, 0))) // x > 0
   )
@@ -151,5 +151,28 @@ class ConstraintTreeAndOr extends FunSuite with Matchers {
       Vector(2, 14)
     )
   }
+}
 
+class ConstraintTreeDimensionTest extends FunSuite with Matchers {
+  test("dimensions, homogenous") {
+    val tree = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(1, 1, 2))) // x + y < 2
+    ).and(ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(2, -3, 5))) // 2x - 3y < 5
+    ))
+    tree.dimensions() should be(
+      Vector(2, 2)
+    )
+  }
+
+  test("dimensions, heterogenous") {
+    val tree = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(1, 1, 2))) // x + y < 2
+    ).and(ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(-3, 5))) // 2x - 3y < 5
+    ))
+    tree.dimensions() should be(
+      Vector(2, 1)
+    )
+  }
 }
