@@ -12,7 +12,7 @@ class ConstraintTreeSatisfiedTest extends FunSuite with Matchers {
     tree.isSatisfiedBy(Vector(1)) should be(true)
   }
 
-  test("one variable, isSatisfiedBy, node, and") {
+  test("one variable, isSatisfiedBy, node, and, manually constructed") {
     val tree = ConstraintTree[Int](Node(
       Logic.and,
       Leaf(SingleConstraint(Vector(1, 2))),
@@ -101,7 +101,7 @@ class ConstraintTreeAndOr extends FunSuite with Matchers {
     Leaf(SingleConstraint(Vector(1, 2))) // x < 2
   )
   test("leaf and leaf") {
-    val tree = leafLeft.and(leafRight.asInstanceOf[leafLeft.T])
+    val tree = leafLeft.and(leafRight)
     tree.t.left.get.leafValue.get.vector should be (
       Vector(-1, 0)
     )
@@ -114,7 +114,7 @@ class ConstraintTreeAndOr extends FunSuite with Matchers {
   }
 
   test("leaf or leaf") {
-    val tree = leafLeft.or(leafRight.asInstanceOf[leafLeft.T])
+    val tree = leafLeft.or(leafRight)
     tree.t.left.get.leafValue.get.vector should be (
       Vector(-1, 0)
     )
@@ -125,4 +125,31 @@ class ConstraintTreeAndOr extends FunSuite with Matchers {
       Logic.or
     )
   }
+
+  test("one variable, isSatisfiedBy, node, and, constructed with and") {
+    val tree = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(1, 2)))
+    ).and(ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(-1, 0)))
+    ))
+    tree.isSatisfiedBy(Vector(1)) should be(true)
+  }
+
+  test("two variables, partiallySolve, node, constructed with and") {
+    val tree = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(1, 1, 2))) // x + y < 2
+    ).and(ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(2, -3, 5))) // 2x - 3y < 5
+    ))
+
+    // solve for x == 3
+    val solution = tree.partiallySolve(1, 3).t
+    solution.left.get.leafValue.get.vector should be(
+      Vector(1, -1) // y < 1
+    )
+    solution.right.get.leafValue.get.vector should be (
+      Vector(2, 14)
+    )
+  }
+
 }
