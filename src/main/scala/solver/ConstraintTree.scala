@@ -35,7 +35,6 @@ case class ConstraintTree[A](
 ) extends Constraint[A, ConstraintTree[A]] {
   type V = SingleConstraint[A]
   type N = Function2[Boolean, Boolean, Boolean]
-  type T <: this.type
   def isSatisfiedBy(assignment: Vector[A]): Boolean = {
     t match {
       case n: Node[V, N] => {
@@ -66,11 +65,11 @@ case class ConstraintTree[A](
     ).asInstanceOf[this.type]
   }
 
-  def and(other: T): T = {
-    copy(Node(Logic.and, t, other.t)).asInstanceOf[T]
+  def and(other: ConstraintTree[A]): this.type = {
+    copy(Node(Logic.and, t, other.t)).asInstanceOf[this.type]
   }
 
-  def or(other: T): T = {
-    copy(Node(Logic.or, t, other.t)).asInstanceOf[T]
+  def or(other: ConstraintTree[A]): this.type = {
+    copy(Node(Logic.or, t, other.t)).asInstanceOf[this.type]
   }
 }
