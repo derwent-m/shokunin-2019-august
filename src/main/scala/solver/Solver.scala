@@ -10,8 +10,8 @@ object Solver {
     *  @return the simplified matrix
     */
   def simplifyInequalities[A](
-      inequalities: Vector[SingleConstraint[A]]
-  ): Vector[SingleConstraint[A]] = {
+      inequalities: ConstraintTree[Int]
+  ): ConstraintTree[Int] = {
     // TODO: implement this
     inequalities
   }
@@ -29,31 +29,9 @@ object Solver {
     * @return the solution widths
     */
   def solutionBounds[A](
-      inequalities: Vector[SingleConstraint[A]]
+      inequalities: ConstraintTree[Int]
   ): Vector[Tuple2[Option[A], Option[A]]] = ???
   //
-
-  /**
-    * Determines if a system of constraints expressed as a vector over type A is satisfied by a particular choice of values
-    */
-  def testSingleConstraintsSatisfaction[A: Numeric](
-      inequalities: Vector[SingleConstraint[A]],
-      assignment: Vector[A]
-  ): Boolean = {
-    inequalities forall { (inequality) =>
-      inequality.isSatisfiedBy(assignment)
-    }
-  }
-
-  def partiallySolveInequalities[A: Numeric](
-      inequalities: Vector[SingleConstraint[A]],
-      index: Int,
-      value: A
-  ): Vector[SingleConstraint[A]] = {
-    inequalities.map(
-      (inequality) => inequality.partiallySolve(index, value)
-    )
-  }
 
   /**
     * Recursively brute forces all solutions which solve a set of integer linear inequalities
@@ -66,13 +44,13 @@ object Solver {
     * @return All possible solutions to these inequalities
     */
   def bruteForceInequalities(
-      inequalities: Vector[SingleConstraint[Int]],
+      inequalities: ConstraintTree[Int],
       variables: Vector[Range],
       usedValues: Set[Int] = Set()
   ): Vector[Vector[Int]] = {
     val inequalitiesSimplified = simplifyInequalities(inequalities)
 
-    val inequalityDimensions = inequalities.map(_.length - 1)
+    val inequalityDimensions = inequalitiesSimplified.dimensions()
     if (!inequalityDimensions.forall(_ == inequalityDimensions.head)) {
       throw new IllegalArgumentException(
         "All inequality constraints should be the same length"
@@ -91,10 +69,7 @@ object Solver {
         // TODO: this could probably be solved more trivially using `solutionBounds`
         (variables(0).toSet -- usedValues)
           .filter((variableValue) => {
-            testSingleConstraintsSatisfaction(
-              inequalitiesSimplified,
-              Vector(variableValue)
-            )
+            inequalitiesSimplified.isSatisfiedBy(Vector(variableValue))
           })
           .map(Vector(_))
           .toVector
@@ -108,11 +83,8 @@ object Solver {
         (variables(variableIndex).toSet -- usedValues)
           .flatMap((variableValue) => {
             //   - partially solve the remaining inequalities
-            val partialSolution = partiallySolveInequalities(
-              inequalitiesSimplified,
-              variableIndex,
-              variableValue
-            )
+            val partialSolution = inequalitiesSimplified
+              .partiallySolve(variableIndex, variableValue)
 
             //   - TODO: check for any all zero constraints or impossible constraints quickly
 
