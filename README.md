@@ -88,7 +88,7 @@ The first 4 constraints set by the problem in matrix form:
   0  1  0  0  0 |  5              // Ev < 5
   0  0 -1  0  0 | -1              // Jo > 1 => -Jo < -1
   0  0  1  0  0 |  5              // Jo < 5
-  0  1  0 -1  0 |  0              // Sa > Ev => Ev - Sa < 0
+  0 -1  0  1  0 |  0              // Sa < Ev => Sa - Ev < 0
 ```
 
 The fifth is an OR constraint. Only one of these is true
@@ -105,6 +105,15 @@ The sixth is an OR constraint. Only one of these is true
 ```md
  Je Ev Jo Sa Ma
  -- -- -- -- --
-  0 -1  1  0  0 |  1              // Jo < Ev - 1 => Jo - Ev < -1
-  0  1 -1  0  0 |  1              // Jo > Ev + 1 => Ev - Jo < -1
+  0 -1  1  0  0 | -1              // Jo < Ev - 1 => Jo - Ev < -1
+  0  1 -1  0  0 | -1              // Jo > Ev + 1 => Ev - Jo < -1
 ```
+
+## Solution
+
+<details>
+  <summary>Spoiler warning</summary>
+  ```
+  Sa, Jo, Je, Ev, Ma
+  ```
+</details>
