@@ -109,6 +109,13 @@ The sixth is an OR constraint. Only one of these is true
   0  1 -1  0  0 | -1              // Jo > Ev + 1 => Ev - Jo < -1
 ```
 
+## How to run
+
+```bash
+sbt compile
+sbt run
+```
+
 ## Solution
 
 <details>
