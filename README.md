@@ -120,7 +120,11 @@ sbt run
 
 <details>
   <summary>Spoiler warning</summary>
-  ```
-  Sa, Jo, Je, Ev, Ma
-  ```
+  <ol>
+    <li>Sarah</li>
+    <li>John</li>
+    <li>Jessie</li>
+    <li>Evan</li>
+    <li>Matt</li>
+  </ol>
 </details>
