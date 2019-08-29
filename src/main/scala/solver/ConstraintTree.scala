@@ -74,5 +74,16 @@ case class ConstraintTree[A](
   }
 
   // inequalities.map(_.length - 1)
-  def dimensions(): Vector[Int] = ???
+  def dimensions(): Vector[Int] = {
+    t match {
+      case n: Node[V, N] => {(
+        ConstraintTree[A](n.left.get).dimensions()
+        ++ ConstraintTree[A](n.right.get).dimensions()
+      )}
+      case l: Leaf[V, N] => {
+        Vector(l.leafValue.get.vector.length - 1)
+      }
+      case Empty => Vector.empty[Int]
+    }
+  }
 }
