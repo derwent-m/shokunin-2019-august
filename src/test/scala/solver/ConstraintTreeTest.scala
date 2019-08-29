@@ -94,13 +94,13 @@ class ConstraintTreePartiallySolveTest extends FunSuite with Matchers {
 
 
 class ConstraintTreeAndOr extends FunSuite with Matchers {
+  val leafLeft = ConstraintTree[Int](
+    Leaf(SingleConstraint(Vector(-1, 0))) // x > 0
+  )
+  val leafRight = ConstraintTree[Int](
+    Leaf(SingleConstraint(Vector(1, 2))) // x < 2
+  )
   test("leaf and leaf") {
-    val leafLeft = ConstraintTree[Int](
-      Leaf(SingleConstraint(Vector(-1, 0))) // x > 0
-    )
-    val leafRight = ConstraintTree[Int](
-      Leaf(SingleConstraint(Vector(1, 2))) // x < 2
-    )
     val tree = leafLeft.and(leafRight.asInstanceOf[leafLeft.T])
     tree.t.left.get.leafValue.get.vector should be (
       Vector(-1, 0)
@@ -114,12 +114,6 @@ class ConstraintTreeAndOr extends FunSuite with Matchers {
   }
 
   test("leaf or leaf") {
-    val leafLeft = ConstraintTree[Int](
-      Leaf(SingleConstraint(Vector(-1, 0))) // x > 0
-    )
-    val leafRight = ConstraintTree[Int](
-      Leaf(SingleConstraint(Vector(1, 2))) // x < 2
-    )
     val tree = leafLeft.or(leafRight.asInstanceOf[leafLeft.T])
     tree.t.left.get.leafValue.get.vector should be (
       Vector(-1, 0)
