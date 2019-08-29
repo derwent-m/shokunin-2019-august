@@ -81,13 +81,54 @@ class ConstraintTreePartiallySolveTest extends FunSuite with Matchers {
       )
     )
 
-    // solve for x == 1
+    // solve for x == 3
     val solution = tree.partiallySolve(1, 3).t
     solution.left.get.leafValue.get.vector should be(
       Vector(1, -1) // y < 1
     )
     solution.right.get.leafValue.get.vector should be (
       Vector(2, 14)
+    )
+  }
+}
+
+
+class ConstraintTreeAndOr extends FunSuite with Matchers {
+  test("leaf and leaf") {
+    val leafLeft = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(-1, 0))) // x > 0
+    )
+    val leafRight = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(1, 2))) // x < 2
+    )
+    val tree = leafLeft.and(leafRight.asInstanceOf[leafLeft.T])
+    tree.t.left.get.leafValue.get.vector should be (
+      Vector(-1, 0)
+    )
+    tree.t.right.get.leafValue.get.vector should be (
+      Vector(1, 2)
+    )
+    tree.t.nodeValue.get should be (
+      Logic.and
+    )
+  }
+
+  test("leaf or leaf") {
+    val leafLeft = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(-1, 0))) // x > 0
+    )
+    val leafRight = ConstraintTree[Int](
+      Leaf(SingleConstraint(Vector(1, 2))) // x < 2
+    )
+    val tree = leafLeft.or(leafRight.asInstanceOf[leafLeft.T])
+    tree.t.left.get.leafValue.get.vector should be (
+      Vector(-1, 0)
+    )
+    tree.t.right.get.leafValue.get.vector should be (
+      Vector(1, 2)
+    )
+    tree.t.nodeValue.get should be (
+      Logic.or
     )
   }
 }

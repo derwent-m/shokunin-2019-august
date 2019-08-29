@@ -35,6 +35,7 @@ case class ConstraintTree[A](
 ) extends Constraint[A, ConstraintTree[A]] {
   type V = SingleConstraint[A]
   type N = Function2[Boolean, Boolean, Boolean]
+  type T <: this.type
   def isSatisfiedBy(assignment: Vector[A]): Boolean = {
     t match {
       case n: Node[V, N] => {
@@ -44,7 +45,7 @@ case class ConstraintTree[A](
         )
       }
       case l: Leaf[V, N] => l.leafValue.get.isSatisfiedBy(assignment)
-      case Empty => true
+      case Empty         => true
     }
   }
   def partiallySolve(index: Int, value: A): this.type = {
@@ -64,4 +65,8 @@ case class ConstraintTree[A](
       }
     ).asInstanceOf[this.type]
   }
+
+  def and(other: T): T = ???
+
+  def or(other: T): T = ???
 }
