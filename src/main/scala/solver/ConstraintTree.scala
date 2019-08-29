@@ -66,7 +66,11 @@ case class ConstraintTree[A](
     ).asInstanceOf[this.type]
   }
 
-  def and(other: T): T = ???
+  def and(other: T): T = {
+    copy(Node(Logic.and, t, other.t)).asInstanceOf[T]
+  }
 
-  def or(other: T): T = ???
+  def or(other: T): T = {
+    copy(Node(Logic.or, t, other.t)).asInstanceOf[T]
+  }
 }
